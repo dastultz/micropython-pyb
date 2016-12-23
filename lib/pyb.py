@@ -144,6 +144,14 @@ def unique_id():
     pass
 
 
+def usb_mode(modestr, vid=0xf055, pid=0x9801, hid=pyb.hid_mouse):
+    """
+    If called with no arguments, return the current USB mode as a string.
+    If called with modestr provided, attempts to set USB mode.
+    """
+    pass
+
+
 class Accel:
 
     def filtered_xyz(self):
@@ -248,6 +256,36 @@ class CAN:
         """
         pass
 
+    def clearfilter(bank):
+        """
+        Clear and disables a filter bank.
+        """
+        pass
+
+    def any(fifo):
+        """
+        Return True if any message waiting on the FIFO, else False.
+        """
+        pass
+
+    def recv(fifo, *, timeout=5000):
+        """
+        Receive data on the bus.
+        """
+        pass
+
+    def send(data, id, *, timeout=0, rtr=False):
+        """
+        Send a message on the bus.
+        """
+        pass
+
+    def rxcallback(fifo, fun):
+        """
+        Register a function to be called when a message is accepted into a empty fifo:
+        """
+        pass
+
 
 class DAC:
 
@@ -265,6 +303,11 @@ class DAC:
         Reinitialise the DAC.  ``bits`` can be 8 or 12.
         """
         pass
+
+    def deinit():
+        """
+        De - initialise the DAC making its pin available for other uses.
+        """
 
     def noise(self, freq):
         """
@@ -284,7 +327,7 @@ class DAC:
         """
         pass
 
-    def write_timed(self, data, freq, *, mode=DAC.NORMAL):
+    def write_timed(self, data, freq, *, mode=NORMAL):
         """
         Initiates a burst of RAM to DAC using a DMA transfer.
         """
@@ -510,13 +553,6 @@ class Pin:
         pass
 
     @classmethod
-    def af_list(cls, ):
-        """
-        Returns an array of alternate functions available for this pin.
-        """
-        pass
-
-    @classmethod
     def debug(cls, state):
         """
         Get or set the debugging state (``True`` or ``False`` for on or off).
@@ -537,7 +573,7 @@ class Pin:
         """
         pass
 
-    def init(self, mode, pull=Pin.PULL_NONE, af=-1):
+    def init(self, mode, pull=PULL_NONE, af=-1):
         """
         Initialise the pin:
         """
@@ -558,6 +594,12 @@ class Pin:
     def af(self):
         """
         Returns the currently configured alternate-function of the pin.
+        """
+        pass
+
+    def af_list(cls, ):
+        """
+        Returns an array of alternate functions available for this pin.
         """
         pass
 
@@ -718,7 +760,7 @@ class SPI:
         """
         pass
 
-    def init(self, mode, baudrate=328125, *, prescaler, polarity=1, phase=0, bits=8, firstbit=SPI.MSB, ti=False, crc=None):
+    def init(self, mode, baudrate=328125, *, prescaler, polarity=1, phase=0, bits=8, firstbit=MSB, ti=False, crc=None):
         """
         Initialise the SPI bus with the given parameters:
         """
@@ -751,9 +793,9 @@ class Switch:
         """
         pass
 
-    def switch(self):
+    def __call__():
         """
-        Return the switch state: ``True`` if pressed down, ``False`` otherwise.
+        Call switch object directly to get its state: True if pressed down, False otherwise.
         """
         pass
 
@@ -869,7 +911,7 @@ class UART:
         """
         pass
 
-    def init(self, baudrate, bits=8, parity=None, stop=1, \*, timeout=1000, flow=None, timeout_char=0, read_buf_len=64):
+    def init(self, baudrate, bits=8, parity=None, stop=1, *, timeout=1000, flow=None, timeout_char=0, read_buf_len=64):
         """
         Initialise the UART bus with the given parameters:
         """
@@ -899,12 +941,6 @@ class UART:
         """
         pass
 
-    def readall(self):
-        """
-        Read as much data as possible.
-        """
-        pass
-
     def readchar(self):
         """
         Receive a single character on the bus.
@@ -929,12 +965,35 @@ class UART:
         """
         pass
 
+    def writechar(char):
+        """
+        Write a single character on the bus. char is an integer to write.
+        Return value: None. See note below if CTS flow control is used.
+        """
+        pass
+
     def sendbreak(self):
         """
         Send a break condition on the bus.
         """
         pass
 
+class USB_HID:
+    """
+    Create a new USB_HID object.
+    """
+
+    def recv(data, *, timeout=5000):
+        """
+        Receive data on the bus.
+        """
+        pass
+
+    def send(data):
+        """
+        Send data over the USB HID interface:
+        """
+        pass
 
 class USB_VCP:
 
@@ -971,13 +1030,6 @@ class USB_VCP:
     def read(self, nbytes):
         """
         Read at most ``nbytes`` from the serial device and return them as a bytes object.
-        """
-        pass
-
-    def readall(self):
-        """
-        Read all available bytes from the serial device and return them as
-        a bytes object, or ``None`` if no pending data available.
         """
         pass
 
