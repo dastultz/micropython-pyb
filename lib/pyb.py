@@ -109,7 +109,7 @@ def main(filename):
     pass
 
 
-def mount(device, mountpoint, *, readonly=False, mkfs=False):
+def mount(device, mountpoint, readonly=False, mkfs=False):
     """
     Mount a block device and make it available as part of the filesystem.
     """
@@ -144,7 +144,7 @@ def unique_id():
     pass
 
 
-def usb_mode(modestr, vid=0xf055, pid=0x9801, hid=pyb.hid_mouse):
+def usb_mode(modestr, vid=0xf055, pid=0x9801, hid=0):
     """
     If called with no arguments, return the current USB mode as a string.
     If called with modestr provided, attempts to set USB mode.
@@ -200,6 +200,12 @@ class ADC:
         """
         pass
 
+    def read_timed(self):
+        pass
+
+    def read_timed_stop(self):
+        pass
+
     def read(self):
         """
         Read the value on the analog pin and return it.  The returned value
@@ -219,13 +225,13 @@ class CAN:
     LOOPBACK = "LOOPBACK"
     SILENT = "SILENT"
     SILENT_LOOPBACK = "SILENT_LOOPBACK"
-    
+
     LIST16 = "LIST16"
     MASK16 = "MASK16"
     LIST32 = "LIST32"
     MASK32 = "MASK32"
-    
-    def __init__(self, bus, mode=None, extframe=False, prescaler=100, *, sjw=1, bs1=6, bs2=8):
+
+    def __init__(self, bus, mode=None, extframe=False, prescaler=100, sjw=1, bs1=6, bs2=8):
         """
         Construct a CAN object on the given bus.
         """
@@ -238,7 +244,7 @@ class CAN:
         """
         pass
 
-    def init(self, mode, extframe=False, prescaler=100, *, sjw=1, bs1=6, bs2=8):
+    def init(self, mode, extframe=False, prescaler=100, sjw=1, bs1=6, bs2=8):
         """
         Initialise the CAN bus with the given parameters
         """
@@ -250,7 +256,7 @@ class CAN:
         """
         pass
 
-    def setfilter(self, bank, mode, fifo, params, *, rtr):
+    def setfilter(self, bank, mode, fifo, params, rtr):
         """
         Configure a filter bank
         """
@@ -268,13 +274,13 @@ class CAN:
         """
         pass
 
-    def recv(fifo, *, timeout=5000):
+    def recv(fifo, timeout=5000):
         """
         Receive data on the bus.
         """
         pass
 
-    def send(data, id, *, timeout=0, rtr=False):
+    def send(data, id, timeout=0, rtr=False):
         """
         Send a message on the bus.
         """
@@ -291,7 +297,7 @@ class DAC:
 
     NORMAL = "NORMAL"
     CIRCULAR = "CIRCULAR"
-    
+
     def __init__(self, port, bits=8):
         """
         Construct a new DAC object.
@@ -327,7 +333,7 @@ class DAC:
         """
         pass
 
-    def write_timed(self, data, freq, *, mode=NORMAL):
+    def write_timed(self, data, freq, mode=NORMAL):
         """
         Initiates a burst of RAM to DAC using a DMA transfer.
         """
@@ -383,7 +389,7 @@ class I2C:
     MASTER = "MASTER"
     SLAVE = "SLAVE"
 
-    def __init__(self, bus):
+    def __init__(self, *args, **kwargs):
         """
         Construct an I2C object on the given bus.
         """
@@ -396,7 +402,7 @@ class I2C:
         """
         pass
 
-    def init(self, mode, *, addr=0x12, baudrate=400000, gencall=False):
+    def init(self, mode, addr=0x12, baudrate=400000, gencall=False):
         """
         Initialise the I2C bus with the given parameters.
         """
@@ -408,25 +414,25 @@ class I2C:
         """
         pass
 
-    def mem_read(self, data, addr, memaddr, *, timeout=5000, addr_size=8):
+    def mem_read(self, data, addr, memaddr, timeout=5000, addr_size=8):
         """
         Read from the memory of an I2C device.
         """
         pass
 
-    def mem_write(self, data, addr, memaddr, *, timeout=5000, addr_size=8):
+    def mem_write(self, data, addr, memaddr, timeout=5000, addr_size=8):
         """
         Write to the memory of an I2C device.
         """
         pass
 
-    def recv(self, recv, addr=0x00, *, timeout=5000):
+    def recv(self, recv, addr=0x00, timeout=5000):
         """
         Receive data on the bus.
         """
         pass
 
-    def send(self, send, addr=0x00, *, timeout=5000):
+    def send(self, send, addr=0x00, timeout=5000):
         """
         Send data on the bus.
         """
@@ -534,23 +540,34 @@ class LED:
         pass
 
 
+class _board(object):
+    """ object has any attribute, returns 1 for requested attribute's value """
+    def __getattr__(self, *args, **kwargs):
+        return 1
+
+
 class Pin:
 
     AF_OD = "AF_OD"
     AF_PP = "AF_PP"
     ANALOG = "ANALOG"
     IN = "IN"
+    OUT= "OUT"
     OUT_OD = "OUT_OD"
     OUT_PP = "OUT_PP"
     PULL_DOWN = "PULL_DOWN"
     PULL_NONE = "PULL_NONE"
     PULL_UP = "PULL_UP"
+    board = _board()
+    cpu = _board()
 
-    def __init__(self, id):
+
+    def __init__(self, *args, **kwargs):
         """
         Create a new Pin object associated with the id.
         """
         pass
+
 
     @classmethod
     def debug(cls, state):
@@ -760,25 +777,25 @@ class SPI:
         """
         pass
 
-    def init(self, mode, baudrate=328125, *, prescaler, polarity=1, phase=0, bits=8, firstbit=MSB, ti=False, crc=None):
+    def init(self, mode,  prescaler, baudrate=328125, polarity=1, phase=0, bits=8, firstbit=MSB, ti=False, crc=None):
         """
         Initialise the SPI bus with the given parameters:
         """
         pass
 
-    def recv(self, recv, *, timeout=5000):
+    def recv(self, recv, timeout=5000):
         """
         Receive data on the bus:
         """
         pass
 
-    def send(self, send, *, timeout=5000):
+    def send(self, send, timeout=5000):
         """
         Send data on the bus:
         """
         pass
 
-    def send_recv(self, send, recv=None, *, timeout=5000):
+    def send_recv(self, send, recv=None, timeout=5000):
         """
         Send and receive data on the bus at the same time:
         """
@@ -807,13 +824,13 @@ class Switch:
 
 class Timer:
 
-    def __init__(self, id):
+    def __init__(self, *args, **kwargs):
         """
         Construct a new timer object of the given id.
         """
         pass
 
-    def init(self, *, freq, prescaler, period):
+    def init(self, freq, prescaler, period):
         """
         Initialise the timer.
         """
@@ -911,7 +928,7 @@ class UART:
         """
         pass
 
-    def init(self, baudrate, bits=8, parity=None, stop=1, *, timeout=1000, flow=None, timeout_char=0, read_buf_len=64):
+    def init(self, baudrate, bits=8, parity=None, stop=1, timeout=1000, flow=None, timeout_char=0, read_buf_len=64):
         """
         Initialise the UART bus with the given parameters:
         """
@@ -983,7 +1000,7 @@ class USB_HID:
     Create a new USB_HID object.
     """
 
-    def recv(data, *, timeout=5000):
+    def recv(data, timeout=5000):
         """
         Receive data on the bus.
         """
@@ -1058,13 +1075,13 @@ class USB_VCP:
         """
         pass
 
-    def recv(self, data, *, timeout=5000):
+    def recv(self, data, timeout=5000):
         """
         Receive data on the bus.
         """
         pass
 
-    def send(self, data, *, timeout=5000):
+    def send(self, data, timeout=5000):
         """
         Send data over the USB VCP.
         """
